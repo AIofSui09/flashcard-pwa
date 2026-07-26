@@ -1,0 +1,333 @@
+/* style.css — モバイル前提のシンプル UI。ライト/ダーク両対応 */
+
+:root {
+  --bg: #f5f5f7;
+  --panel: #ffffff;
+  --text: #1c1c1e;
+  --sub: #6e6e73;
+  --border: #d9d9de;
+  --primary: #4f46e5;
+  --primary-text: #ffffff;
+  --danger: #dc2626;
+  --danger-text: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17171a;
+    --panel: #232327;
+    --text: #f2f2f4;
+    --sub: #9a9aa2;
+    --border: #3a3a40;
+    --primary: #6d66f2;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+main {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 12px 16px calc(24px + env(safe-area-inset-bottom));
+}
+
+/* ノッチ/Dynamic Island 機種でステータスバーに被らないよう上側 safe area を確保 */
+.app-header {
+  padding-top: env(safe-area-inset-top);
+}
+
+h1 {
+  font-size: 1.3rem;
+  margin: 8px 0;
+}
+
+h2 {
+  font-size: 1rem;
+  margin: 20px 0 8px;
+}
+
+button {
+  font: inherit;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.big {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  font-size: 1.05rem;
+  margin-top: 10px;
+}
+
+.primary {
+  background: var(--primary);
+  color: var(--primary-text);
+}
+
+.primary:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.secondary {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 12px;
+}
+
+.danger {
+  background: var(--danger);
+  color: var(--danger-text);
+}
+
+.text-btn {
+  background: none;
+  color: var(--primary);
+  padding: 8px;
+  font-size: 0.95rem;
+}
+
+.row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* デッキ一覧 */
+.deck-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+.deck-list li {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.deck-list label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.deck-list input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.deck-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.deck-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.deck-sub {
+  font-size: 0.85rem;
+  color: var(--sub);
+}
+
+/* データ管理 */
+.data-mgmt {
+  margin-top: 24px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.data-mgmt summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.data-mgmt-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.file-btn {
+  display: block;
+  text-align: center;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.file-btn input {
+  display: none;
+}
+
+.import-report {
+  font-size: 0.8rem;
+  color: var(--sub);
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.import-report:empty {
+  display: none;
+}
+
+.app-footer {
+  margin-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--sub);
+  font-size: 0.85rem;
+}
+
+/* 学習画面 */
+.study-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.session-counter {
+  font-size: 0.85rem;
+  color: var(--sub);
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  min-height: 45vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  font-size: 1.05rem;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.card-back {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--primary);
+}
+
+.reveal-hint {
+  text-align: center;
+  color: var(--sub);
+  font-size: 0.9rem;
+}
+
+.answer-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.answer-row .big {
+  margin-top: 0;
+}
+
+.exclude-btn {
+  display: block;
+  margin: 14px auto 0;
+  color: var(--sub);
+}
+
+/* 統計画面 */
+.stats-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+}
+
+.stats-list li {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.excluded-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.restore-btn {
+  background: var(--primary);
+  color: var(--primary-text);
+  padding: 6px 12px;
+  flex-shrink: 0;
+}
+
+#stats-weak-empty,
+#stats-excluded-empty {
+  color: var(--sub);
+  font-size: 0.9rem;
+}
+
+#empty-state {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 0.95rem;
+}
+
+/* トースト（画面下部の一時通知） */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text);
+  color: var(--bg);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  max-width: 90%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

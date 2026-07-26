@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>シンプル暗記カード</title>
+  <meta name="description" content="Anki の TSV を読み込んで使うシンプルな暗記カード PWA">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="暗記カード">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <!-- ホーム画面 -->
+    <section id="screen-home">
+      <header class="app-header">
+        <h1>シンプル暗記カード</h1>
+      </header>
+
+      <div id="empty-state" hidden>
+        <p>カードがまだありません。</p>
+        <p>「TSV を読み込む」から、OneDrive の <code>Scripts/anki_export/cards_*.txt</code> を選んでインポートしてください。複数ファイルは<strong>日付の古い順</strong>に取り込まれます。</p>
+        <p>以前のバックアップ（JSON）がある場合は「バックアップから復元」を使ってください。</p>
+      </div>
+
+      <div id="deck-area" hidden>
+        <div class="row-between">
+          <h2>デッキ</h2>
+          <button type="button" id="btn-select-all" class="text-btn">すべて選択/解除</button>
+        </div>
+        <ul id="deck-list" class="deck-list"></ul>
+        <button type="button" id="btn-start" class="primary big" disabled>学習開始</button>
+        <button type="button" id="btn-stats" class="secondary big">統計を見る</button>
+      </div>
+
+      <details class="data-mgmt">
+        <summary>データ管理（インポート・バックアップ）</summary>
+        <div class="data-mgmt-body">
+          <label class="file-btn">TSV を読み込む
+            <input type="file" id="input-tsv" accept=".txt,.tsv,text/plain,text/tab-separated-values" multiple>
+          </label>
+          <pre id="import-report" class="import-report"></pre>
+          <button type="button" id="btn-backup" class="secondary">バックアップを書き出す</button>
+          <label class="file-btn">バックアップから復元
+            <input type="file" id="input-restore" accept=".json,application/json">
+          </label>
+        </div>
+      </details>
+
+      <footer class="app-footer">
+        <span id="version-label"></span>
+        <button type="button" id="btn-update" class="text-btn">アプリの更新を確認</button>
+      </footer>
+    </section>
+
+    <!-- 学習画面 -->
+    <section id="screen-study" hidden>
+      <div class="study-top">
+        <button type="button" id="btn-study-back" class="text-btn">← 終了</button>
+        <span id="session-counter" class="session-counter"></span>
+      </div>
+      <div id="card" class="card">
+        <div id="card-front" class="card-front"></div>
+        <div id="card-back" class="card-back" hidden></div>
+      </div>
+      <p id="reveal-hint" class="reveal-hint">カードをタップして答えを表示</p>
+      <div id="answer-buttons" hidden>
+        <div class="answer-row">
+          <button type="button" id="btn-wrong" class="danger big">できなかった</button>
+          <button type="button" id="btn-correct" class="primary big">できた</button>
+        </div>
+        <button type="button" id="btn-exclude" class="text-btn exclude-btn">このカードを除外する</button>
+      </div>
+    </section>
+
+    <!-- 統計画面 -->
+    <section id="screen-stats" hidden>
+      <div class="study-top">
+        <button type="button" id="btn-stats-back" class="text-btn">← 戻る</button>
+      </div>
+      <h2>デッキ別成績</h2>
+      <ul id="stats-decks" class="stats-list"></ul>
+      <h2>苦手カード（間違い回数順・上位20）</h2>
+      <p id="stats-weak-empty">まだ間違えたカードはありません。</p>
+      <ul id="stats-weak" class="stats-list"></ul>
+      <h2>除外中のカード</h2>
+      <p id="stats-excluded-empty">除外中のカードはありません。</p>
+      <ul id="stats-excluded" class="stats-list excluded-list"></ul>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
