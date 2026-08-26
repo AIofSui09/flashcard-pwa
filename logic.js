@@ -111,6 +111,23 @@ export function excludedCards(cards, state) {
     .sort((a, b) => a.deck.localeCompare(b.deck, 'ja') || a.back.localeCompare(b.back, 'ja'));
 }
 
+// デッキ単位の削除。対象デッキのカードと、その guid の統計・除外状態を取り除いた
+// 新しい cards / state を返す（引数は変更しない）。存在しないデッキ名は removed=0 の no-op。
+// 削除後に同じ TSV を再インポートするとカードは復活する（統計はゼロから）仕様。
+export function deleteDeck(cards, state, deck) {
+  const nextCards = {};
+  const removedGuids = new Set();
+  for (const [guid, c] of Object.entries(cards)) {
+    if (c.deck === deck) removedGuids.add(guid);
+    else nextCards[guid] = c;
+  }
+  const nextState = {};
+  for (const [guid, s] of Object.entries(state)) {
+    if (!removedGuids.has(guid)) nextState[guid] = s;
+  }
+  return { cards: nextCards, state: nextState, removed: removedGuids.size };
+}
+
 // バックアップ JSON の検証。壊れたデータで現状を上書きしないための入口ゲート。
 export function validateBackup(obj) {
   if (!obj || typeof obj !== 'object') return { ok: false, reason: 'JSON がオブジェクトではありません' };

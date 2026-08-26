@@ -8,10 +8,11 @@ import {
   deckStats,
   weakCards,
   excludedCards,
+  deleteDeck,
   validateBackup,
 } from './logic.js';
 
-export const APP_VERSION = '1.0.1'; // sw.js の CACHE_VERSION と揃えて更新する
+export const APP_VERSION = '1.1.0'; // sw.js の CACHE_VERSION と揃えて更新する
 
 const KEYS = { cards: 'sfc.cards', state: 'sfc.state', meta: 'sfc.meta' };
 
@@ -92,11 +93,34 @@ function renderHome() {
     sub.textContent = `${d.total}枚（除外 ${d.excluded}）・正答率 ${acc}`;
     info.append(name, sub);
     label.append(cb, info);
-    li.append(label);
+    // 削除ボタンは label の外に置く（label 内だとクリック転送でチェックボックスが誤トグルする）
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'deck-delete-btn';
+    del.textContent = '削除';
+    del.setAttribute('aria-label', `デッキ「${d.deck}」を削除`);
+    del.addEventListener('click', () => onDeleteDeck(d.deck, d.total));
+    li.append(label, del);
     list.append(li);
   }
   updateStartButton();
   document.getElementById('version-label').textContent = `v${APP_VERSION}`;
+}
+
+function onDeleteDeck(deck, total) {
+  if (!confirm(`デッキ「${deck}」のカード ${total}枚と統計・除外状態を削除します。同じ TSV を再インポートするとカードは復活しますが、統計はゼロからになります。よろしいですか？`)) return;
+  const result = deleteDeck(cards, state, deck);
+  // 保存成功を確認してからメモリへ反映する（失敗時に localStorage と乖離させない）。
+  // 保存順は cards→state→meta 固定。途中失敗で orphan な state / selectedDecks が
+  // 残っても、表示・出題・統計は全て cards 起点の導出のため実害はない。
+  if (!saveJSON(KEYS.cards, result.cards)) return;
+  saveJSON(KEYS.state, result.state);
+  cards = result.cards;
+  state = result.state;
+  meta.selectedDecks = meta.selectedDecks.filter((x) => x !== deck);
+  saveJSON(KEYS.meta, meta);
+  toast(`デッキ「${deck}」を削除しました（${result.removed}枚）`);
+  renderHome();
 }
 
 function onDeckSelectionChange() {

@@ -10,6 +10,7 @@ import {
   deckStats,
   weakCards,
   excludedCards,
+  deleteDeck,
   validateBackup,
 } from '../logic.js';
 
@@ -160,4 +161,38 @@ test('validateBackup: 正誤カウントが数値でない state は拒否', () 
   assert.equal(validateBackup(bad).ok, false);
   const good = { cards: CARDS, state: { g1: { excluded: false, correct: 3, wrong: 0 } } };
   assert.equal(validateBackup(good).ok, true);
+});
+
+test('deleteDeck: 対象デッキのカードと統計だけ消え、他デッキは残る', () => {
+  const state = {
+    g1: { excluded: false, correct: 2, wrong: 1 },
+    g3: { excluded: true, correct: 0, wrong: 4 },
+  };
+  const r = deleteDeck(CARDS, state, 'D1');
+  assert.equal(r.removed, 2);
+  assert.deepEqual(Object.keys(r.cards), ['g3']);
+  assert.deepEqual(r.state, { g3: { excluded: true, correct: 0, wrong: 4 } });
+});
+
+test('deleteDeck: 存在しないデッキは no-op（removed=0）', () => {
+  const state = { g1: { excluded: false, correct: 1, wrong: 0 } };
+  const r = deleteDeck(CARDS, state, '存在しないデッキ');
+  assert.equal(r.removed, 0);
+  assert.deepEqual(r.cards, CARDS);
+  assert.deepEqual(r.state, state);
+});
+
+test('deleteDeck: 引数の cards/state を変更しない（純粋性）', () => {
+  const cards = { ...CARDS };
+  const state = { g1: { excluded: false, correct: 1, wrong: 0 } };
+  deleteDeck(cards, state, 'D1');
+  assert.deepEqual(cards, CARDS);
+  assert.deepEqual(state, { g1: { excluded: false, correct: 1, wrong: 0 } });
+});
+
+test('deleteDeck: state に無い guid のカードでも安全に消える', () => {
+  const r = deleteDeck(CARDS, {}, 'D2');
+  assert.equal(r.removed, 1);
+  assert.deepEqual(Object.keys(r.cards).sort(), ['g1', 'g2']);
+  assert.deepEqual(r.state, {});
 });
