@@ -1,6 +1,6 @@
 // sw.js — オフライン用 Service Worker。
 // 更新時は CACHE_VERSION を app.js の APP_VERSION と揃えて上げる（キャッシュ名が変わると旧キャッシュを破棄して新版に入れ替わる）。
-const CACHE_VERSION = '1.0.0';
+const CACHE_VERSION = '1.0.1';
 const CACHE_NAME = `sfc-v${CACHE_VERSION}`;
 
 const ASSETS = [

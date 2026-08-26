@@ -11,7 +11,7 @@ import {
   validateBackup,
 } from './logic.js';
 
-export const APP_VERSION = '1.0.0'; // sw.js の CACHE_VERSION と揃えて更新する
+export const APP_VERSION = '1.0.1'; // sw.js の CACHE_VERSION と揃えて更新する
 
 const KEYS = { cards: 'sfc.cards', state: 'sfc.state', meta: 'sfc.meta' };
 
